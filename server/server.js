@@ -12,7 +12,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect('mongodb://localhost:27017/e-commerce').then((result) => console.log(`connected to database successfully`)).catch((error) => console.log(`connection error: ${error}`));
+mongoose.connect('mongodb://localhost:27017/e-commerce').then((result) => console.log(`connected to database successfully`)).catch((error) => console.log(`connection error: ${error}`)); //
 
 
 app.get('/', (req,res) => {
