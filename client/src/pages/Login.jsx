@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
 import axios from 'axios';
-import { TextField, Button, Box, Typography, Container, Paper, Checkbox, FormControlLabel } from "@mui/material";
+import { TextField, Button, Box, Typography, Container, Paper, Checkbox, FormControlLabel, Link } from "@mui/material";
 
 
 const Login = () => {
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [checked, setChecked] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,13 +20,17 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();   
 
-    axios.post('http://localhost:3001/register', { userName: userName, password: userPassword })
+    axios.post('http://localhost:3001/login', { userName: userName, password: userPassword })
       .then((response) => {
         console.log(response.data);
-        navigate('/');
+        setMessage('Login successful');
+        setIsError(false);
+        // navigate('/contact');
       })
       .catch((error) => {
-        console.error("Login failed:", error.response?.data || error.message);
+        console.error("Login failed:", error.response || error);
+        setMessage(error.response?.data?.error || 'Login failed');
+        setIsError(true);
       });
   };
 
@@ -62,12 +68,22 @@ const Login = () => {
               onChange={(e) => setUserPassword(e.target.value)}
             />
 
+            {message && (
+               <Typography 
+               variant="body2" 
+               sx={{ color: isError ? 'error.main' : 'success.main' }}
+            >
+              {message}
+              </Typography>
+            )}
+
+
               <FormControlLabel
                 control={<Checkbox checked={checked} onChange={handleChange} />}
               label="Trust This Device"
              />
 
-              <Typography variant="h6" sx={{ mt: 2 }}>Don't have an account, sign up</Typography>
+              <Typography variant="h6" sx={{ mt: 2 }}>Don't have an account, <Link href='/signup'>sign up</Link> </Typography>
 
             <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
               Login
